@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PINEAPPLE MYSTERY - COMPLETE SAGA</title>
+<style>
+  :root { 
+    --bg: #050505; --accent: #f4d03f; --red: #cc0000; --blue: #2b57ff; --green: #28a745; 
+    --kiwi: #00ff00; --bberry: #4facfe; --pink: #ff69b4; --gold: #b8860b;
+  }
+  body { font-family: 'Courier New', monospace; background: var(--bg); color: #e0e0e0; margin: 0; overflow-x: hidden; text-align: center; transition: 0.8s; }
+  
+  /* 테마 모드 */
+  body.kiwi-mode { --accent: var(--kiwi); color: var(--kiwi); }
+  body.blueberry-mode { --accent: var(--bberry); color: #fff; }
+  body.eden-active { background: #fff !important; color: #000 !important; }
+  body.equinox-mode { background: #111 !important; color: #fff !important; }
+
+  /* EQUINOX 그라데이션 텍스트 */
+  .equinox-text {
+    font-size: 50px; font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 50%, #000000 50%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+
+  .ticker-wrap { width: 100%; overflow: hidden; background: var(--accent); color: #000; padding: 5px 0; font-weight: 900; position: fixed; z-index: 10; top: 0; }
+  .t-bottom { top: auto; bottom: 0; }
+  .ticker { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  #h-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
+  .p-cont { width: 200px; height: 3px; background: #222; margin-top: 15px; }
+  .p-bar { width: 0%; height: 100%; background: #fff; transition: 0.1s; }
+
+  .wrapper { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+  .card { background: rgba(10,10,10,0.98); padding: 35px; border-radius: 20px; border: 1px solid #222; width: 100%; max-width: 380px; position: relative; }
+  
+  .btn { background: #111; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; }
+
+  #role { font-size: 45px; font-weight: 900; margin-bottom: 10px; }
+  #skill { font-size: 30px; font-weight: bold; margin-bottom: 10px; }
+  .sk-gun { background: linear-gradient(45deg, #ff0000, #0000ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .sk-pink { color: var(--pink); } .sk-gold { color: var(--gold); }
+  .sk-eden { color: #ff0000; text-shadow: 0 0 15px rgba(255,0,0,0.8); }
+  .sk-bberry-devil { color: var(--bberry); font-style: italic; text-shadow: 0 0 8px var(--bberry); }
+
+  #log-box { 
+    display: none; text-align: left; background: #000 !important; 
+    padding: 15px; font-size: 13px; color: var(--kiwi) !important; 
+    margin-top: 15px; border: 1px solid var(--kiwi); line-height: 1.6;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+  }
+
+  .binary-list { font-size: 10px; color: #666; text-align: left; margin-top: 20px; line-height: 1.8; }
+  #debug-btn { font-size: 10px; color: #1a1a1a; margin-top: 25px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker" id="tick-t">PINEAPPLE SYSTEM ONLINE 🍍 CORE SECURED 🍍</div></div>
+
+<div id="h-screen">
+  <div style="color:#fff; letter-spacing: 3px; font-weight:bold;" id="h-msg">INITIALIZING...</div>
+  <div class="p-cont"><div class="p-bar" id="p-bar"></div></div>
+</div>
+
+<div class="wrapper">
+  <div id="equinox-screen" class="card" style="display:none;">
+    <div class="equinox-text">EQUINOX</div>
+    <p style="font-size:14px; color:#888;">양과 음 사이에 존재하는 무언가</p>
+    <div class="binary-list">
+      EDEN: 01000101 01000100 01000101 01001110<br>
+      ZOMBIE: 01011010 01001111 01001101 01000010 01001001 01000101<br>
+      CHILLSEAR: 01000011 01001000 01001001 01001100 01001100<br>
+      CRYING DEVIL: 01000011 01010010 01011001 01001001 01001110 01000111<br>
+      PINEAPPLE: 01010000 01001001 01001110 01000101<br>
+      BLUEBERRY: 01000010 01001100 01010101 01000101<br>
+      KIWI: 01001011 01001001 01010111 01001001
+    </div>
+    <button onclick="location.reload()" class="btn">RETURN TO CORE</button>
+  </div>
+
+  <div id="menu" class="card">
+    <h1 id="m-title" style="color:var(--accent); letter-spacing:5px;">PINEAPPLE</h1>
+    <p id="m-desc" style="font-size:10px; color:#555; margin-bottom:20px;">DOMINANT SYSTEM</p>
+    <div style="margin-bottom:20px;">
+      PLAYER: <input type="number" id="pCount" min="4" max="20" value="6" style="background:none; border:none; border-bottom:1px solid #444; color:#fff; width:45px; text-align:center; font-size:18px;">
+    </div>
+    <button onclick="bootSystem()" class="btn" id="start-btn" style="color:var(--accent);">START SYSTEM</button>
+    <span id="debug-btn" onclick="openAdmin()">[ADMIN]</span>
+    <div id="debug-panel" style="display:none; margin-top:20px; text-align:left; font-size:11px; border:1px dashed var(--accent); padding:10px;">
+      TYPE: <select id="forceType" onchange="checkDevil(this.value)">
+        <option value="none">RANDOM</option>
+        <option value="Standard">Standard (59%)</option>
+        <option value="Chillsear">Chillsear (30%)</option>
+        <option value="Zombie">Zombie (10%)</option>
+        <option value="Eden">Eden (1%)</option>
+      </select>
+      <div id="devil-info" style="color:var(--bberry); display:none; margin-top:5px; font-size:10px;">* CRYING DEVIL 활성화 시 모든 생존자는 보안관이 됩니다.</div>
+    </div>
+  </div>
+
+  <div id="draw-area" class="card" style="display:none;">
+    <div id="pNum" style="color:#666; font-size:20px; margin-bottom:25px;"></div>
+    <button onclick="reveal()" class="btn" style="background:var(--red); border:none; height:60px;">ACCESS ROLE</button>
+  </div>
+
+  <div id="result" class="card">
+    <div id="role"></div>
+    <div id="skill"></div>
+    <div id="desc" style="font-size:16px; margin-bottom:25px; color:#444;"></div>
+    <button onclick="next()" class="btn" style="background:#000; color:#fff;">CONFIRM</button>
+  </div>
+
+  <div id="final-screen" class="card" style="display:none;">
+    <div id="fType" style="font-size:45px; font-weight:900; margin-bottom:10px;"></div>
+    <div id="fDesc" style="font-size:15px; color:#888; margin-bottom:30px;"></div>
+    <button onclick="checkLog()" class="btn" style="font-size:12px;">VIEW DATA LOG (0217)</button>
+    <div id="log-box"></div>
+    <button onclick="location.reload()" class="btn" style="background:none; border-color:#222; color:#444; margin-top:20px;">REBOOT</button>
+  </div>
+</div>
+
+<div class="ticker-wrap t-bottom"><div class="ticker" id="tick-b">🍍 PINEAPPLE CORP 🍍 CLASSIFIED 🍍 0217 🍍</div></div>
+
+<script>
+const skills = {
+  머더: [
+    {n:"방탄", d:"한 번 공격을 버팁니다. (2목숨)입니다."}, 
+    {n:"가방", d:"죽인 대상이 살아있는 것처럼 행동하다가 마지막에 사망합니다. (1명)입니다."}, 
+    {n:"총잡이", d:"보안관과 같은 방식으로 처치합니다.", s:"sk-gun"}
+  ],
+  보안관: [
+    {n:"강인한", d:"목숨이 2개가 됩니다.입니다."}, 
+    {n:"마피아", d:"머더와 모든 시민을 제거하면 즉시 승리합니다.", s:"sk-gold"}
+  ],
+  의사: [
+    {n:"자가치유", d:"자신을 치료할 수 있습니다. (1회)입니다."}, 
+    {n:"전문 의사", d:"최대 2명까지 치료할 수 있습니다.입니다."}
+  ],
+  시민: [
+    {n:"스파이", d:"시민/보안관 제거 시 목숨 증가. 머더 처치 시 자신도 사망하며 시민이 승리합니다.", s:"sk-gold"}, 
+    {n:"퍼블win", d:"가장 먼저 머더에게 죽으면 즉시 시민 승리입니다.", s:"sk-pink"}, 
+    {n:"패링", d:"한 번 공격을 막아냅니다.입니다."}
+  ]
+};
+
+const mTypes = [
+  {n:"Standard", w:59, d:"추가 능력이 포함된 기본 라운드입니다.", c:"var(--red)"},
+  {n:"Chillsear", w:30, d:"의사가 치료할 수 없는 암살 라운드입니다.", c:"#87CEEB"},
+  {n:"Zombie", w:10, d:"죽은 자가 좀비가 되어 감염시키는 라운드입니다.", c:"#32CD32"},
+  {n:"Eden", w:1, d:"[SYSTEM ERROR] 공허의 강림. 머더의 목숨이 5개가 됩니다.", c:"#000000"},
+  {n:"Crying Devil", w:0, d:"고통받는 머더를 보고 지어진 이름입니다. 슬픔의 연쇄를 끊으십시오.", c:"#4facfe"}
+];
+
+let mode = "normal", tP, cur, rls, rMT, aS, log = [];
+
+function openAdmin() {
+  const pw = prompt("ENTER CODE:");
+  if(pw === "619") {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("equinox-screen").style.display = "block";
+    document.body.className = "equinox-mode";
+  } else if(pw === "9245") {
+    mode = "kiwi"; document.body.className = "kiwi-mode";
+    document.getElementById("debug-panel").style.display = "block";
+    setUI("KIWI_HACK", "THE UNKNOWN INVADER");
+  } else if(pw === "1441") {
+    mode = "blueberry"; document.body.className = "blueberry-mode";
+    document.getElementById("debug-panel").style.display = "block";
+    document.getElementById("forceType").innerHTML += `<option value="Crying Devil">Crying Devil</option>`;
+    setUI("BLUEBERRY", "THE FALLEN CREATOR");
+  }
+}
+
+function setUI(t, d) {
+  document.getElementById("m-title").innerText = t;
+  document.getElementById("m-desc").innerText = d;
+}
+
+function checkDevil(val) {
+  document.getElementById("devil-info").style.display = (val === "Crying Devil") ? "block" : "none";
+}
+
+function bootSystem() {
+  document.getElementById("h-screen").style.display = "flex";
+  let p = 0;
+  const iv = setInterval(() => {
+    p += 5; document.getElementById("p-bar").style.width = p + "%";
+    if(p >= 100) { clearInterval(iv); setup(); }
+  }, 40);
+}
+
+function setup() {
+  document.getElementById("h-screen").style.display = "none";
+  tP = parseInt(document.getElementById("pCount").value);
+  const fT = document.getElementById("forceType").value;
+  if(fT !== "none") rMT = mTypes.find(t => t.n === fT);
+  else {
+    const r = Math.random()*100; let c = 0;
+    for(const t of mTypes) { c+=t.w; if(r<c){ rMT=t; break; } }
+  }
+
+  rls = new Array(tP).fill(null);
+  // 머더 선정
+  const mIdx = Math.floor(Math.random() * tP);
+  rls[mIdx] = "머더";
+
+  // 우는 악마 모드: 머더 제외 전원 보안관
+  if(rMT.n === "Crying Devil") {
+    for(let i=0; i<tP; i++) if(rls[i] !== "머더") rls[i] = "보안관";
+  } else {
+    // 일반 모드 직업 배정
+    let remaining = []; rls.forEach((v, i) => { if(!v) remaining.push(i); });
+    remaining.sort(() => Math.random() - 0.5);
+    rls[remaining[0]] = "보안관";
+    rls[remaining[1]] = "의사";
+    for(let i=2; i<remaining.length; i++) rls[remaining[i]] = "시민";
+  }
+
+  aS = rls.map((role, i) => {
+    if(role === "머더") {
+      if(rMT.n === "Eden") return {n:"Eden Protocol", d:"당신은 5개의 목숨을 가진 불사신입니다. 모든 시민을 말살하십시오.", s:"sk-eden"};
+      if(rMT.n === "Crying Devil") return {n:"Crying Devil", d:"당신은 블루베리의 고통받는 파편입니다. 당신을 향한 모든 총구에 맞서십시오.", s:"sk-bberry-devil"};
+      return skills.머더[Math.floor(Math.random()*3)];
+    }
+    // 시민/보안관/의사 능력
+    if(role === "시민") return Math.random() > 0.6 ? skills.시민[Math.floor(Math.random()*3)] : {n:"무능력", d:"능력이 없습니다.입니다."};
+    if(role === "보안관") return skills.보안관[Math.floor(Math.random()*2)];
+    if(role === "의사") return skills.의사[Math.floor(Math.random()*2)];
+  });
+
+  log = rls.map((r,i) => `P${i+1}: [${r}] - ${aS[i].n}`);
+  cur = 0;
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("draw-area").style.display = "block";
+  document.getElementById("pNum").innerText = `PLAYER 1`;
+}
+
+function reveal() {
+  const r = rls[cur], s = aS[cur], rd = document.getElementById("role"), sd = document.getElementById("skill");
+  rd.innerText = r; rd.style.color = r==="머더"?"var(--red)":r==="보안관"?"var(--blue)":r==="의사"?"var(--green)":"#666";
+  sd.innerText = s.n; sd.className = s.s || "";
+  document.getElementById("desc").innerText = s.d;
+  document.getElementById("draw-area").style.display = "none";
+  document.getElementById("result").style.display = "block";
+}
+
+function next() {
+  cur++;
+  if(cur >= tP) {
+    document.getElementById("result").style.display = "none";
+    document.getElementById("final-screen").style.display = "block";
+    document.getElementById("fType").innerText = rMT.n;
+    document.getElementById("fType").style.color = rMT.c;
+    document.getElementById("fDesc").innerText = rMT.d;
+    if(rMT.n === "Eden") document.body.classList.add("eden-active");
+    return;
+  }
+  document.getElementById("result").style.display = "none";
+  document.getElementById("draw-area").style.display = "block";
+  document.getElementById("pNum").innerText = `PLAYER ${cur+1}`;
+}
+
+function checkLog() {
+  const pw = prompt("ENTER ACCESS CODE (0217):");
+  if(pw === "0217") {
+    document.getElementById("log-box").innerHTML = "<div style='color:#fff; border-bottom:1px solid #00ff00; margin-bottom:10px; font-size:10px;'>[KIWI_HACK_CONNECTED]... ACCESSING BLACKBOX</div>" + log.join("<br>");
+    document.getElementById("log-box").style.display = "block";
+  }
+}
+</script>
+</body>
+</html>
